@@ -1,5 +1,5 @@
 # 💫 About Me:
-🔭 I’m currently working on an AI chatbot<br>🤝 I’m looking for help with Backend<br>🌱 I’m currently learning fullstack, Linux <br><br>
+<br>🤝 I’m looking for help with Backend<br>🌱 I’m currently learning fullstack, Linux <br><br>
 
 
 # 💻 Tech Stack:
