@@ -1,5 +1,5 @@
 #  About Me:
-<br>I’m currently learning fullstack, Linux <br><br>
+<br>I’m currently studying CS to become a professional job applicant <br><br>
 
 
 # 💻 Tech Stack:
