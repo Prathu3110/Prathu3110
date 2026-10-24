@@ -21,20 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Contribution snake
-        uses: Platane/snk/svg-only@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          github_token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
-          outputs: |
-            assets/snake-dark.svg?palette=github-dark&color_snake=#b392f0&color_dots=#161b22,#3b2f5c,#5b4691,#8a6fd1,#b392f0
-            assets/snake-light.svg?color_snake=#8250df&color_dots=#ebedf0,#e2d9f8,#c5b3f0,#a07fe6,#8250df
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Neofetch + header cards
+      - name: Header, neofetch and snake cards
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_PAT: ${{ secrets.GH_PAT }}   # optional: add a PAT secret to count private contributions
