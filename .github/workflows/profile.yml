@@ -1,0 +1,48 @@
+name: refresh profile cards
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # every 15 minutes (GitHub's minimum is 5; runs can be delayed under load)
+  workflow_dispatch:          # "Run workflow" button in the Actions tab
+  push:
+    branches: [main]
+    paths: ["scripts/**", ".github/workflows/profile.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-cards
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Contribution snake
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          github_token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          outputs: |
+            assets/snake-dark.svg?palette=github-dark&color_snake=#b392f0&color_dots=#161b22,#3b2f5c,#5b4691,#8a6fd1,#b392f0
+            assets/snake-light.svg?color_snake=#8250df&color_dots=#ebedf0,#e2d9f8,#c5b3f0,#a07fe6,#8250df
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Neofetch + header cards
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}   # optional: add a PAT secret to count private contributions
+        run: python scripts/generate.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets
+          git diff --staged --quiet || { git commit -m "chore: refresh profile cards" && git push; }
