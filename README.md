@@ -1,15 +1,27 @@
-#  About Me:
-<br>I’m currently studying CS to become a professional job applicant <br><br>
+<p align="center">
+  <img src="assets/header.svg" alt="PRATHYUMNA — ml · data engineering · inference & gpu · fintech" width="100%">
+</p>
 
+<p align="center">
+  <img src="assets/neofetch.svg" alt="neofetch-style card: B.Tech CSE (Big Data Analytics) at SRM IST Chennai, ex-SWE intern at Firstsource, plus live GitHub stats" width="100%">
+</p>
 
-# 💻 Tech Stack:
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white) ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white) ![C](https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white)
-# 📊 GitHub Stats:
-![](https://github-readme-stats.vercel.app/api?username=Prathu3110&theme=dark&hide_border=false&include_all_commits=false&count_private=false)<br/>
-![](https://github-readme-streak-stats.herokuapp.com/?user=Prathu3110&theme=dark&hide_border=false)<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=Prathu3110&theme=dark&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
+<p align="center">
+  <a href="https://prathyumna-portfolio.vercel.app"><img src="https://img.shields.io/badge/portfolio-0d1117?style=for-the-badge&logo=vercel&logoColor=b392f0" alt="portfolio"></a>
+  <img src="https://img.shields.io/badge/python-0d1117?style=for-the-badge&logo=python&logoColor=79c0ff" alt="python">
+  <img src="https://img.shields.io/badge/go-0d1117?style=for-the-badge&logo=go&logoColor=79c0ff" alt="go">
+  <img src="https://img.shields.io/badge/c++-0d1117?style=for-the-badge&logo=cplusplus&logoColor=ff7b9c" alt="c++">
+  <img src="https://img.shields.io/badge/typescript-0d1117?style=for-the-badge&logo=typescript&logoColor=79c0ff" alt="typescript">
+  <img src="https://img.shields.io/badge/cuda-0d1117?style=for-the-badge&logo=nvidia&logoColor=7ee787" alt="cuda">
+  <img src="https://img.shields.io/badge/mysql-0d1117?style=for-the-badge&logo=mysql&logoColor=ffa657" alt="mysql">
+</p>
 
----
-[![](https://visitcount.itsvg.in/api?id=Prathu3110&icon=0&color=0)](https://visitcount.itsvg.in)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/snake-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/snake-light.svg">
+    <img alt="contribution graph being eaten by a snake" src="assets/snake-dark.svg" width="100%">
+  </picture>
+</p>
 
-<!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
+<p align="center"><sub><code>$ exit</code> &nbsp;·&nbsp; cards regenerate every 6h via GitHub Actions</sub></p>
