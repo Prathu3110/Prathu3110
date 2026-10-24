@@ -5,7 +5,7 @@ Builds the animated SVG cards for the profile README.
   assets/header.svg    ASCII banner + typed tagline (static content)
   assets/neofetch.svg  neofetch-style card with live GitHub stats
 
-Runs in GitHub Actions every few hours. Stats come from the GitHub GraphQL API
+Runs in GitHub Actions every 15 minutes. Stats come from the GitHub GraphQL API
 using GITHUB_TOKEN (or GH_PAT if you add one, to also count private contributions).
 Run locally with `--demo` to render using sample numbers, no token needed.
 """
@@ -81,7 +81,7 @@ query($login: String!) {
   user(login: $login) {
     createdAt
     followers { totalCount }
-    repositories(ownerAffiliations: OWNER, isFork: false, first: 100, privacy: PUBLIC) {
+    repositories(ownerAffiliations: OWNER, isFork: false, first: 100__PRIVACY__) {
       totalCount
       nodes {
         stargazerCount
@@ -96,7 +96,7 @@ query($login: String!) {
       totalPullRequestContributions
       contributionCalendar {
         totalContributions
-        weeks { contributionDays { date contributionCount } }
+        weeks { contributionDays { date weekday contributionCount } }
       }
     }
   }
@@ -105,12 +105,17 @@ query($login: String!) {
 
 
 def fetch():
-    token = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN")
+    # With your own PAT the query can see private repos (count, languages) and
+    # private contributions. With the default Actions token it sees public only.
+    pat = os.environ.get("GH_PAT")
+    token = pat or os.environ.get("GITHUB_TOKEN")
     if not token:
         sys.exit("set GITHUB_TOKEN (or run with --demo)")
+    query = QUERY.replace("__PRIVACY__", "" if pat else ", privacy: PUBLIC")
+    print("token:", "GH_PAT (public + private)" if pat else "GITHUB_TOKEN (public only)")
     req = urllib.request.Request(
         "https://api.github.com/graphql",
-        data=json.dumps({"query": QUERY, "variables": {"login": USER}}).encode(),
+        data=json.dumps({"query": query, "variables": {"login": USER}}).encode(),
         headers={"Authorization": f"bearer {token}", "User-Agent": USER},
     )
     with urllib.request.urlopen(req, timeout=30) as r:
@@ -122,8 +127,17 @@ def fetch():
 
 def demo_data():
     today = dt.date.today()
-    days = [{"date": str(today - dt.timedelta(d)), "contributionCount": (1 if d < 6 else (d * 7) % 3)}
-            for d in range(364, -1, -1)]
+    start = today - dt.timedelta(days=364 + (today.weekday() + 1) % 7)   # a Sunday ~1 year back
+    weeks, d = [], start
+    while d <= today:
+        week = []
+        for _ in range(7):
+            if d <= today:
+                n = (d.toordinal() * 7919) % 11
+                week.append({"date": str(d), "weekday": (d.weekday() + 1) % 7,
+                             "contributionCount": n - 6 if n > 6 else 0})
+            d += dt.timedelta(days=1)
+        weeks.append({"contributionDays": week})
     return {
         "createdAt": "2024-05-21T00:00:00Z",
         "followers": {"totalCount": 8},
@@ -141,7 +155,7 @@ def demo_data():
             "totalCommitContributions": 113, "restrictedContributionsCount": 0,
             "totalPullRequestContributions": 0,
             "contributionCalendar": {"totalContributions": 361,
-                                     "weeks": [{"contributionDays": days}]},
+                                     "weeks": weeks},
         },
     }
 
@@ -190,6 +204,7 @@ def summarise(u):
         "longest": longest,
         "langs": top,
         "uptime": uptime,
+        "weeks": cc["contributionCalendar"]["weeks"],
         "updated": dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30))).strftime("%d %b %Y, %H:%M IST"),
     }
 
@@ -233,8 +248,9 @@ def header_svg():
             f'font-size="{fs}" fill="url(#grad)" textLength="{bw:.1f}" lengthAdjust="spacingAndGlyphs" '
             f'xml:space="preserve">{escape(row)}</text>')
 
-    tagline = "ml · data engineering · inference & gpu · fintech"
+    tagline = "I'm currently studying CS to become a professional job applicant"
     n, cw = len(tagline), 13 * 0.6
+    dur = round(n * 0.05, 2)          # typing speed: 50 ms per character
     ty = 78 + 6 * lh + 44
     prompt = f'{t("prathyumna", GREEN)}{t("@", DIM)}{t("github", ACCENT2)}{t(" ~ $ ", DIM)}'
     plen = len("prathyumna@github ~ $ ")
@@ -252,12 +268,12 @@ def header_svg():
 <text x="{tag_x:.1f}" y="{ty}" font-size="13" xml:space="preserve" class="ln" style="animation-delay:1s">{prompt}</text>
 <text x="{tx:.1f}" y="{ty}" font-size="13" xml:space="preserve" fill="{FG}" clip-path="url(#type)">{escape(tagline)}</text>
 <g class="mover"><text x="{tx + n * cw:.1f}" y="{ty}" font-size="13" fill="{ACCENT}" class="cursor">█</text></g>
-<text x="{W / 2}" y="{ty + 30}" font-size="11.5" text-anchor="middle" fill="{DIM}" class="ln" style="animation-delay:4.1s">B.Tech CSE (Big Data Analytics) · SRM IST, Chennai · ex-SWE intern @ Firstsource</text>
+<text x="{W / 2}" y="{ty + 30}" font-size="11.5" text-anchor="middle" fill="{DIM}" class="ln" style="animation-delay:{1.6 + dur:.1f}s">B.Tech CSE (Big Data Analytics) · SRM IST, Chennai · ex-SWE intern @ Firstsource</text>
 '''
     # typing effect: the clip grows one character at a time and the cursor follows it
-    css = f'''.typer {{ animation: typing 2.6s steps({n}) 1.4s both; }}
+    css = f'''.typer {{ animation: typing {dur}s steps({n}) 1.4s both; }}
   @keyframes typing {{ from {{ width: 0px; }} to {{ width: {n * cw + 2:.1f}px; }} }}
-  .mover {{ animation: follow 2.6s steps({n}) 1.4s both; }}
+  .mover {{ animation: follow {dur}s steps({n}) 1.4s both; }}
   @keyframes follow {{ from {{ transform: translateX(-{n * cw:.1f}px); }} to {{ transform: none; }} }}'''
     return window(W, H, "~/Prathu3110 — zsh", body, css)
 
@@ -343,12 +359,123 @@ def neofetch_svg(s):
     return window(W, int(H), "prathyumna@github: ~ — neofetch", body)
 
 
+# ── snake ───────────────────────────────────────────────────────────────────
+def snake_path(cols, rows=7):
+    """A closed loop through every cell, so the snake never has to leave the grid.
+
+    Row 0 is a return lane. Column 0 runs down, the rest zig-zag through rows 1..6,
+    then the snake comes home along row 0. An odd number of columns can't be covered
+    by a perfect loop, so the last two columns are swept as a pair and one cell is
+    crossed twice (it's long gone from the tail by then, so it's invisible).
+    """
+    path = [(0, r) for r in range(rows)]
+    zig_end = cols if cols % 2 == 0 else cols - 2
+    for c in range(1, zig_end):
+        rng = range(rows - 1, 0, -1) if c % 2 else range(1, rows)
+        path += [(c, r) for r in rng]
+    if cols % 2:
+        a, b = cols - 2, cols - 1
+        for i, r in enumerate(range(rows - 1, 0, -1)):
+            path += [(a, r), (b, r)] if i % 2 == 0 else [(b, r), (a, r)]
+        path += [(b, 1), (b, 0)]
+        lane = range(a, 0, -1)
+    else:
+        lane = range(cols - 1, 0, -1)
+    path += [(c, 0) for c in lane]
+    return path
+
+
+def snake_svg(s):
+    weeks = s["weeks"]
+    cols = len(weeks)
+    cell, gap = 12, 3.6
+    pitch = cell + gap
+    W = 900
+    gx = (W - (cols * pitch - gap)) / 2
+    gy = 34 + 44
+    H = int(gy + 7 * pitch - gap + 46)
+
+    counts = [c["contributionCount"] for w in weeks for c in w["contributionDays"] if c["contributionCount"]]
+    counts.sort()
+    q = lambda f: counts[min(len(counts) - 1, int(len(counts) * f))] if counts else 1
+    cuts = [q(.25), q(.5), q(.75)]
+    levels = ["#3b2f5c", "#5b4691", "#8a6fd1", ACCENT]
+    level = lambda n: levels[sum(n > c for c in cuts)]
+
+    grid = {}
+    for ci, w in enumerate(weeks):
+        for day in w["contributionDays"]:
+            grid[(ci, day["weekday"])] = day["contributionCount"]
+
+    path = snake_path(cols)
+    N, step = len(path), 0.11
+    T = round(N * step, 2)
+    first = {}
+    for i, cellpos in enumerate(path):
+        first.setdefault(cellpos, i)
+
+    pos = lambda c, r: (gx + c * pitch, gy + r * pitch)
+    out = []
+    for c in range(cols):
+        for r in range(7):
+            x, y = pos(c, r)
+            out.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{cell}" height="{cell}" rx="2.5" fill="{BG_BAR}"/>')
+    for (c, r), n in grid.items():
+        if not n:
+            continue
+        x, y = pos(c, r)
+        # each cell disappears the moment the head reaches it and regrows half a lap later
+        delay = -(T - first[(c, r)] * step)
+        out.append(f'<rect class="food" style="animation-delay:{delay:.2f}s" x="{x:.1f}" y="{y:.1f}" '
+                   f'width="{cell}" height="{cell}" rx="2.5" fill="{level(n)}"/>')
+
+    frames = " ".join(
+        f"{i / N * 100:.3f}% {{ transform: translate({pos(*cp)[0] - gx:.1f}px,{pos(*cp)[1] - gy:.1f}px); }}"
+        for i, cp in enumerate(path + [path[0]]))
+    length = 7
+    body_cols = [PINK, ACCENT, ACCENT, "#9d7fe0", "#8a6fd1", "#6f57b0", "#5b4691"]
+    segs = []
+    for k in reversed(range(length)):
+        inset = 0 if k == 0 else min(3.0, 0.4 * k)
+        sz = cell - 2 * inset
+        segs.append(f'<rect class="seg" style="animation-delay:{-(T - k * step):.2f}s" x="{gx + inset:.1f}" y="{gy + inset:.1f}" '
+                    f'width="{sz:.1f}" height="{sz:.1f}" rx="{3.5 if k == 0 else 2.5}" fill="{body_cols[k]}"/>')
+
+    out.append('<g id="snake">' + "".join(segs) + "</g>")
+    out.append(f'<text x="{gx:.1f}" y="{gy - 16}" font-size="12" xml:space="preserve">'
+               f'{t("$ ", DIM)}{t("./snake --eat ", FG)}{t("contributions", ACCENT2)}</text>')
+    out.append(f'<text x="{gx + cols * pitch - gap:.1f}" y="{gy - 16}" font-size="12" text-anchor="end" fill="{DIM}">'
+               f'{s["contribs"]} contributions in the last year</text>')
+    legend_x = gx + cols * pitch - gap - 5 * pitch - 30
+    out.append(f'<text x="{legend_x - 8:.1f}" y="{H - 22}" font-size="10.5" text-anchor="end" fill="{DIM}">less</text>')
+    for i, c in enumerate([BG_BAR] + levels):
+        out.append(f'<rect x="{legend_x + i * pitch:.1f}" y="{H - 31}" width="{cell - 2}" height="{cell - 2}" rx="2" fill="{c}"/>')
+    out.append(f'<text x="{legend_x + 5 * pitch + 4:.1f}" y="{H - 22}" font-size="10.5" fill="{DIM}">more</text>')
+    out.append(f'<text x="{gx:.1f}" y="{H - 22}" font-size="10.5" fill="{DIM}">score: {s["contribs"]}  ·  high score: {s["longest"]}-day streak</text>')
+
+    css = f""".seg {{ animation: crawl {T}s linear infinite; }}
+  @keyframes crawl {{ {frames} }}
+  .food {{ animation: eat {T}s linear infinite; }}
+  @keyframes eat {{ 0% {{ opacity: 0; }} 45% {{ opacity: 0; }} 55% {{ opacity: 1; }} 100% {{ opacity: 1; }} }}"""
+    return window(W, H, "~/contributions — snake", "\n".join(out), css)
+
+
 def main():
     ASSETS.mkdir(exist_ok=True)
     stats = summarise(demo_data() if "--demo" in sys.argv else fetch())
     (ASSETS / "header.svg").write_text(header_svg(), encoding="utf-8")
-    (ASSETS / "neofetch.svg").write_text(neofetch_svg(stats), encoding="utf-8")
-    print(json.dumps({k: v for k, v in stats.items() if k != "langs"}, indent=2))
+    (ASSETS / "snake.svg").write_text(snake_svg(stats), encoding="utf-8")
+    # Only rewrite the card when a stat actually changed, so frequent runs
+    # don't make a commit every time just because the "synced" time moved.
+    card = ASSETS / "neofetch.svg"
+    new = neofetch_svg(stats)
+    strip = lambda svg: "\n".join(l for l in svg.splitlines() if "synced " not in l)
+    if not card.exists() or strip(card.read_text(encoding="utf-8")) != strip(new):
+        card.write_text(new, encoding="utf-8")
+        print("stats changed, card updated")
+    else:
+        print("no change in stats")
+    print(json.dumps({k: v for k, v in stats.items() if k not in ("langs", "weeks")}, indent=2))
 
 
 if __name__ == "__main__":

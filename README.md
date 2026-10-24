@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/header.svg" alt="PRATHYUMNA — ml · data engineering · inference & gpu · fintech" width="100%">
+  <img src="assets/header.svg" alt="PRATHYUMNA — I'm currently studying CS to become a professional job applicant" width="100%">
 </p>
 
 <p align="center">
@@ -17,11 +17,7 @@
 </p>
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/snake-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/snake-light.svg">
-    <img alt="contribution graph being eaten by a snake" src="assets/snake-dark.svg" width="100%">
-  </picture>
+  <img src="assets/snake.svg" alt="a snake eating my contribution graph" width="100%">
 </p>
 
-<p align="center"><sub><code>$ exit</code> &nbsp;·&nbsp; cards regenerate every 6h via GitHub Actions</sub></p>
+<p align="center"><sub><code>$ exit</code> &nbsp;·&nbsp; cards regenerate every 15 min via GitHub Actions</sub></p>
