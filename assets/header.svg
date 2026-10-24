@@ -4,10 +4,10 @@
   @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .cursor { animation: blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
-  .typer { animation: typing 2.6s steps(49) 1.4s both; }
-  @keyframes typing { from { width: 0px; } to { width: 384.2px; } }
-  .mover { animation: follow 2.6s steps(49) 1.4s both; }
-  @keyframes follow { from { transform: translateX(-382.2px); } to { transform: none; } }
+  .typer { animation: typing 3.2s steps(64) 1.4s both; }
+  @keyframes typing { from { width: 0px; } to { width: 501.2px; } }
+  .mover { animation: follow 3.2s steps(64) 1.4s both; }
+  @keyframes follow { from { transform: translateX(-499.2px); } to { transform: none; } }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
 </style>
 <rect x=".5" y=".5" width="899" height="269" rx="12" fill="#0d1117" stroke="#30363d"/>
@@ -21,12 +21,12 @@
     <stop offset="0" stop-color="#b392f0"/><stop offset=".5" stop-color="#ff7b9c"/><stop offset="1" stop-color="#79c0ff"/>
     <animateTransform attributeName="gradientTransform" type="translate" values="-.6 0;.6 0;-.6 0" dur="8s" repeatCount="indefinite"/>
   </linearGradient>
-  <clipPath id="type"><rect class="typer" x="340.8" y="187.6" width="384.2" height="24"/></clipPath>
+  <clipPath id="type"><rect class="typer" x="282.3" y="187.6" width="501.2" height="24"/></clipPath>
 </defs>
 <text class="ln" style="animation-delay:0.15s" x="146.4" y="78.0" font-size="11.5" fill="url(#grad)" textLength="607.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve">██████╗ ██████╗  █████╗ ████████╗██╗  ██╗██╗   ██╗██╗   ██╗███╗   ███╗███╗   ██╗ █████╗ </text><text class="ln" style="animation-delay:0.27s" x="146.4" y="91.6" font-size="11.5" fill="url(#grad)" textLength="607.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve">██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║  ██║╚██╗ ██╔╝██║   ██║████╗ ████║████╗  ██║██╔══██╗</text><text class="ln" style="animation-delay:0.39s" x="146.4" y="105.2" font-size="11.5" fill="url(#grad)" textLength="607.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve">██████╔╝██████╔╝███████║   ██║   ███████║ ╚████╔╝ ██║   ██║██╔████╔██║██╔██╗ ██║███████║</text><text class="ln" style="animation-delay:0.51s" x="146.4" y="118.8" font-size="11.5" fill="url(#grad)" textLength="607.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve">██╔═══╝ ██╔══██╗██╔══██║   ██║   ██╔══██║  ╚██╔╝  ██║   ██║██║╚██╔╝██║██║╚██╗██║██╔══██║</text><text class="ln" style="animation-delay:0.63s" x="146.4" y="132.4" font-size="11.5" fill="url(#grad)" textLength="607.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve">██║     ██║  ██║██║  ██║   ██║   ██║  ██║   ██║   ╚██████╔╝██║ ╚═╝ ██║██║ ╚████║██║  ██║</text><text class="ln" style="animation-delay:0.75s" x="146.4" y="146.0" font-size="11.5" fill="url(#grad)" textLength="607.2" lengthAdjust="spacingAndGlyphs" xml:space="preserve">╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝</text>
-<text x="169.2" y="203.6" font-size="13" xml:space="preserve" class="ln" style="animation-delay:1s"><tspan fill="#7ee787">prathyumna</tspan><tspan fill="#6e7681">@</tspan><tspan fill="#79c0ff">github</tspan><tspan fill="#6e7681"> ~ $ </tspan></text>
-<text x="340.8" y="203.6" font-size="13" xml:space="preserve" fill="#c9d1d9" clip-path="url(#type)">ml · data engineering · inference &amp; gpu · fintech</text>
-<g class="mover"><text x="723.0" y="203.6" font-size="13" fill="#b392f0" class="cursor">█</text></g>
-<text x="450.0" y="233.6" font-size="11.5" text-anchor="middle" fill="#6e7681" class="ln" style="animation-delay:4.1s">B.Tech CSE (Big Data Analytics) · SRM IST, Chennai · ex-SWE intern @ Firstsource</text>
+<text x="110.7" y="203.6" font-size="13" xml:space="preserve" class="ln" style="animation-delay:1s"><tspan fill="#7ee787">prathyumna</tspan><tspan fill="#6e7681">@</tspan><tspan fill="#79c0ff">github</tspan><tspan fill="#6e7681"> ~ $ </tspan></text>
+<text x="282.3" y="203.6" font-size="13" xml:space="preserve" fill="#c9d1d9" clip-path="url(#type)">I&#x27;m currently studying CS to become a professional job applicant</text>
+<g class="mover"><text x="781.5" y="203.6" font-size="13" fill="#b392f0" class="cursor">█</text></g>
+<text x="450.0" y="233.6" font-size="11.5" text-anchor="middle" fill="#6e7681" class="ln" style="animation-delay:4.8s">B.Tech CSE (Big Data Analytics) · SRM IST, Chennai · ex-SWE intern @ Firstsource</text>
 
 </svg>
